@@ -4,7 +4,7 @@ import Container from '@material-ui/core/Container';
 import ThemeProvider from '@material-ui/styles/ThemeProvider';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import primaryColor from '@material-ui/core/colors/brown';
-import secondaryColor from '@material-ui/core/colors/green';
+import secondaryColor from '@material-ui/core/colors/deepOrange';
 
 import { Provider } from 'react-redux';
 import { Route, Switch, BrowserRouter as Router, Redirect } from 'react-router-dom';
@@ -18,7 +18,10 @@ import FavSpells from './containers/FavSpells';
 const theme = createMuiTheme({
   palette: {
     primary: primaryColor,
-    secondary: secondaryColor,
+    secondary: {
+      ...secondaryColor,
+      light: secondaryColor[50]
+    }
   }
 });
 
