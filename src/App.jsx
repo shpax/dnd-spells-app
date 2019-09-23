@@ -1,29 +1,46 @@
 import React from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
+import ThemeProvider from '@material-ui/styles/ThemeProvider';
+import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
+import primaryColor from '@material-ui/core/colors/brown';
+import secondaryColor from '@material-ui/core/colors/green';
+
 import { Provider } from 'react-redux';
 import { Route, Switch, BrowserRouter as Router, Redirect } from 'react-router-dom';
-import SpellsList from './containers/SpellsList';
+import SpellsList from './containers/AllSpells';
 import store from './store';
-import AppBar from './containers/AppBar';
+import AppBar from './containers/Header';
 import History from './containers/History';
+import FavSpells from './containers/FavSpells';
+
+
+const theme = createMuiTheme({
+  palette: {
+    primary: primaryColor,
+    secondary: secondaryColor,
+  }
+});
 
 function App() {
   return (
     <Provider store={store}>
-      <React.Fragment>
-        <CssBaseline />
-        <AppBar />
-        <Container maxWidth="md">
+      <ThemeProvider theme={theme}>
+        <React.Fragment>
+          <CssBaseline />
           <Router>
-            <Switch>
-              <Route exact path="/spells" component={SpellsList} />
-              <Route exact path="/spells/history" component={History} />
-              <Redirect to="/spells" />
-            </Switch>
+            <AppBar />
+            <Container maxWidth="md">
+              <Switch>
+                <Route exact path="/spells/all" component={SpellsList} />
+                <Route exact path="/spells/favorite" component={FavSpells} />
+                <Route exact path="/spells/history" component={History} />
+                <Redirect to="/spells/all" />
+              </Switch>
+            </Container>
           </Router>
-        </Container>
-      </React.Fragment>
+        </React.Fragment>
+      </ThemeProvider>
     </Provider>
   );
 }

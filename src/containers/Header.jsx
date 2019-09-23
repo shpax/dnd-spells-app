@@ -1,18 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
+import Drawer from '@material-ui/core/Drawer';
 import Toolbar from '@material-ui/core/Toolbar';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
 import MenuIcon from '@material-ui/icons/Menu';
+import ListIcon from '@material-ui/icons/List';
+import HistoryIcon from '@material-ui/icons/History';
+import StarIcon from '@material-ui/icons/Star';
 import { connect } from 'react-redux';
 import debounce from 'lodash/debounce';
-import { setSpellsFilter } from '../store/reducers/spells';
+import { Link } from 'react-router-dom';
+import { setFilter } from '../store/reducers/header';
 
 const useStyles = makeStyles(theme => ({
   grow: {
     flexGrow: 1,
+  },
+  drawerListRoot: {
+    minWidth: 200,
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -45,10 +57,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function AppBarContainer(props) {
+function Header(props) {
   const classes = useStyles();
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const onChange = event => props.onSearchUpdate(event.target.value);
+  const toggleDrawer = open => () => setDrawerOpen(open);
 
   return (
     <div className={classes.grow}>
@@ -57,6 +71,7 @@ function AppBarContainer(props) {
           <IconButton
             edge="start"
             className={classes.menuButton}
+            onClick={toggleDrawer(true)}
             color="inherit"
             aria-label="open drawer"
           >
@@ -78,12 +93,34 @@ function AppBarContainer(props) {
           </div>
         </Toolbar>
       </AppBar>
+      <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
+        <List className={classes.drawerListRoot} onClick={toggleDrawer(false)}>
+          <Link to="/spells/favorite">
+            <ListItem button>
+              <ListItemIcon><StarIcon /></ListItemIcon>
+              <ListItemText primary="Избранные" />
+            </ListItem>
+          </Link>
+          <Link to="/spells/all">
+            <ListItem button>
+              <ListItemIcon><ListIcon /></ListItemIcon>
+              <ListItemText primary="Список" />
+            </ListItem>
+          </Link>
+          <Link to="/spells/history">
+            <ListItem button>
+              <ListItemIcon><HistoryIcon /></ListItemIcon>
+              <ListItemText primary="История" />
+            </ListItem>
+          </Link>
+        </List>
+      </Drawer>
     </div>
   );
 }
 
 const mapDispatchToProps = dispatch => ({
-  onSearchUpdate: debounce(text => dispatch(setSpellsFilter(text)), 250),
+  onSearchUpdate: debounce(text => dispatch(setFilter(text)), 200),
 });
 
-export default connect(null, mapDispatchToProps)(AppBarContainer);
+export default connect(null, mapDispatchToProps)(Header);

@@ -6,11 +6,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import pick from 'lodash/pick';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { spellsListSelector } from '../store/selectors/spells';
-import { pushHistory } from '../store/reducers/history';
+import SpellTableRow from '../components/SpellTableRow';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -30,7 +26,7 @@ const useStyles = makeStyles(theme => ({
 function SpellsList(props) {
   const classes = useStyles();
 
-  const rows = props.spells.map(spell => pick(spell, ['name', 'level', 'id']));
+  const onFavChange = spellId => event => props.onFavChange(spellId, event.target.checked);
 
   return (
     <div className={classes.root}>
@@ -38,22 +34,22 @@ function SpellsList(props) {
         <Table className={classes.table} size="small">
           <TableHead>
             <TableRow>
-              <TableCell padding='checkbox'>Уровень</TableCell>
+              <TableCell padding='checkbox'></TableCell>
+              <TableCell padding='none'>Ур.</TableCell>
               <TableCell>Название</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map(row => (
-              <TableRow key={row.id}>
-                <TableCell component="th" scope="row" padding='checkbox'>
-                  {row.level}
-                </TableCell>
-                <TableCell>
-                  <Link to={`/spells/history`} onClick={() => props.pushHistory(row.id)}>
-                    {row.name}
-                  </Link>
-                </TableCell>
-              </TableRow>
+            {props.spells.map(spell => (
+              <SpellTableRow
+                isFavorite={spell.isFavorite}
+                onFavChange={onFavChange(spell.id)}
+                id={spell.id}
+                level={spell.level}
+                name={spell.name}
+                key={spell.id}
+                onSpellClick={() => props.onSpellClick(spell.id)}
+              />
             ))}
           </TableBody>
         </Table>
@@ -62,12 +58,5 @@ function SpellsList(props) {
   );
 }
 
-const mapStateToProps = store => ({
-  spells: spellsListSelector(store),
-})
 
-const mapDispatchToProps = dispatch => ({
-  pushHistory: id => dispatch(pushHistory(id)),
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(SpellsList);
+export default SpellsList;

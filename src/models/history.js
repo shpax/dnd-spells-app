@@ -1,15 +1,6 @@
+import LocalStorageArrayModel from './LocalStorageArrayModel'
 
-let historyList = JSON.parse(localStorage.getItem('historyList') || '[]');
+const model = new LocalStorageArrayModel('historyList');
 
-const saveHistory = () => localStorage.setItem('historyList', JSON.stringify(historyList));
-
-export const pushHistory = (id) => {
-  historyList = historyList.filter(sp => sp !== id);
-  historyList.unshift(id);
-  if (historyList.length > 10) historyList.pop();
-  console.log(historyList);
-  
-  saveHistory();
-}
-
-export const getHistory = () => [...historyList];
+export const pushHistory = (id) => model.push(id);
+export const getHistory = () => model.get();
