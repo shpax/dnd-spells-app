@@ -2,12 +2,12 @@ import React from 'react'
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import Checkbox from '@material-ui/core/Checkbox';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
-import StarIcon from '@material-ui/icons/Star';
+import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
+import BookmarkIcon from '@material-ui/icons/Bookmark';
 import { Link } from 'react-router-dom';
 
-import { withStyles } from '@material-ui/core/styles';
-import LazyLoad from 'react-lazyload';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import withStyles from '@material-ui/core/styles/withStyles';
 
 const FavCheckbox = withStyles(theme => ({
   root: {
@@ -19,24 +19,34 @@ const FavCheckbox = withStyles(theme => ({
   checked: {},
 }))(props => <Checkbox color="default" {...props} />);
 
-export default ({ onFavChange, isFavorite, id, level, name, onSpellClick }) => (
-  <LazyLoad height={32} offset={300} once>
+const useStyles = makeStyles(theme => ({
+  spellName: {
+    textDecoration: 'none',
+    color: theme.palette.primary.dark,
+    fontWeight: 500,
+  },
+}))
+
+export default ({ onFavChange, isFavorite, id, level, name, onSpellClick }) => {
+  const classes = useStyles();
+
+  return (
     <TableRow key={id}>
-      <TableCell padding="checkbox">
-        <FavCheckbox
-          checked={isFavorite}
-          icon={<StarBorderIcon fontSize="small" />} checkedIcon={<StarIcon fontSize="small" />}
-          onChange={onFavChange}
-        />
-      </TableCell>
-      <TableCell component="th" scope="row" padding='none'>
+      <TableCell component="th" scope="row" padding='default'>
         {level}
       </TableCell>
-      <TableCell>
-        <Link to={`/spells/history`} onClick={onSpellClick}>
+      <TableCell padding='none'>
+        <Link to={`/spells/history`} onClick={onSpellClick} className={classes.spellName}>
           {name}
         </Link>
       </TableCell>
+      <TableCell padding="none">
+        <FavCheckbox
+          checked={isFavorite}
+          icon={<BookmarkBorderIcon fontSize="small" />} checkedIcon={<BookmarkIcon fontSize="small" />}
+          onChange={onFavChange}
+        />
+      </TableCell>
     </TableRow>
-  </LazyLoad>
-)
+  )
+}

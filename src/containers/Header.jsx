@@ -46,6 +46,11 @@ const useStyles = makeStyles(theme => ({
     marginLeft: 0,
     width: '100%',
   },
+  drawerLink: {
+    textDecoration: 'none',
+    color: theme.palette.primary.dark,
+    fontWeight: 500,
+  },
   inputRoot: {
     color: 'inherit',
     width: '100%',
@@ -95,19 +100,19 @@ function Header(props) {
       </AppBar>
       <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
         <List className={classes.drawerListRoot} onClick={toggleDrawer(false)}>
-          <Link to="/spells/favorite">
+          <Link to="/spells/favorite" className={classes.drawerLink}>
             <ListItem button>
               <ListItemIcon><StarIcon /></ListItemIcon>
               <ListItemText primary="Избранные" />
             </ListItem>
           </Link>
-          <Link to="/spells/all">
+          <Link to="/spells/all" className={classes.drawerLink}>
             <ListItem button>
               <ListItemIcon><ListIcon /></ListItemIcon>
               <ListItemText primary="Список" />
             </ListItem>
           </Link>
-          <Link to="/spells/history">
+          <Link to="/spells/history" className={classes.drawerLink}>
             <ListItem button>
               <ListItemIcon><HistoryIcon /></ListItemIcon>
               <ListItemText primary="История" />

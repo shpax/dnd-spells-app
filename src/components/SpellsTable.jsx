@@ -28,29 +28,32 @@ function SpellsList(props) {
 
   const onFavChange = spellId => event => props.onFavChange(spellId, event.target.checked);
 
+  const loadSpells = () => props.spells
+    .map(spell => (
+      <SpellTableRow
+        isFavorite={spell.isFavorite}
+        onFavChange={onFavChange(spell.id)}
+        id={spell.id}
+        level={spell.level}
+        name={spell.name}
+        key={spell.id}
+        onSpellClick={() => props.onSpellClick(spell.id)}
+      />
+    ));
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <Table className={classes.table} size="small">
+        <Table className={classes.table}>
           <TableHead>
             <TableRow>
-              <TableCell padding='checkbox'></TableCell>
-              <TableCell padding='none'>Ур.</TableCell>
-              <TableCell>Название</TableCell>
+              <TableCell padding='default'>Ур.</TableCell>
+              <TableCell padding='none'>Название</TableCell>
+              <TableCell padding='none'></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.spells.map(spell => (
-              <SpellTableRow
-                isFavorite={spell.isFavorite}
-                onFavChange={onFavChange(spell.id)}
-                id={spell.id}
-                level={spell.level}
-                name={spell.name}
-                key={spell.id}
-                onSpellClick={() => props.onSpellClick(spell.id)}
-              />
-            ))}
+            {loadSpells()}
           </TableBody>
         </Table>
       </Paper>
