@@ -10,5 +10,4 @@ const initialState = {
 
 export default handleActions({
   [pushHistory]: (state, { payload }) => ({ ...state, list: [payload, ...state.list.filter(sp => payload !== sp)] }),
-  [setHistory]: (state, { payload }) => ({ ...state, list: [...payload] }),
 }, initialState);

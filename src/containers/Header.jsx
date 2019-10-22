@@ -1,33 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
-import Drawer from '@material-ui/core/Drawer';
 import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
+import Tab from '@material-ui/core/Tab';
+import Tabs from '@material-ui/core/Tabs';
+import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
-import MenuIcon from '@material-ui/icons/Menu';
-import ListIcon from '@material-ui/icons/List';
-import HistoryIcon from '@material-ui/icons/History';
-import StarIcon from '@material-ui/icons/Star';
+import ClearIcon from '@material-ui/icons/Clear';
+
 import { connect } from 'react-redux';
 import debounce from 'lodash/debounce';
-import { Link } from 'react-router-dom';
 import { setFilter } from '../store/reducers/header';
+import browserHistory from '../models/browserHistory';
 
 const useStyles = makeStyles(theme => ({
   grow: {
     flexGrow: 1,
   },
+  appBar: {
+    paddingRight: 0,
+  },
   drawerListRoot: {
     minWidth: 200,
   },
   menuButton: {
-    marginRight: theme.spacing(2),
+    // marginRight: theme.spacing(2),
   },
   title: {
     display: 'none',
@@ -51,6 +49,9 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.primary.dark,
     fontWeight: 500,
   },
+  tabsContainer: {
+    marginTop: theme.spacing(6),
+  },
   inputRoot: {
     color: 'inherit',
     width: '100%',
@@ -62,33 +63,40 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function Header(props) {
-  const classes = useStyles();
-  const [drawerOpen, setDrawerOpen] = useState(false);
+const TABS = [
+  '/spells/all',
+  '/spells/favorite',
+  '/spells/history'
+];
 
-  const onChange = event => props.onSearchUpdate(event.target.value);
-  const toggleDrawer = open => () => setDrawerOpen(open);
+function Header({ updateFilter }) {
+  const classes = useStyles();
+  const [tabIndex, setTabIndex] = useState(TABS.indexOf(browserHistory.location.pathname));
+  const [searchInputText, setSearchInputText] = useState('');
+
+  browserHistory.listen((location) => setTabIndex(TABS.indexOf(location.pathname)));
+
+  const openTab = (event, newValue) => {
+    setTabIndex(newValue);
+    browserHistory.push(TABS[newValue])
+  }
+
+  const updateFilterDebounced = useCallback(debounce(updateFilter, 200), [updateFilter]);
+
+  const setSearchText = useCallback(text => {
+    setSearchInputText(text);
+    updateFilterDebounced(text);
+  }, [updateFilterDebounced]);
 
   return (
     <div className={classes.grow}>
       <AppBar>
-        <Toolbar>
-          <IconButton
-            edge="start"
-            className={classes.menuButton}
-            onClick={toggleDrawer(true)}
-            color="inherit"
-            aria-label="open drawer"
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography className={classes.title} variant="h6" noWrap>
-            Список заклинаний
-          </Typography>
+        <Toolbar variant='dense' className={classes.appBar}>
           <div className={classes.search}>
             <InputBase
               placeholder="Поиск заклинаний"
-              onChange={onChange}
+              onChange={event => setSearchText(event.target.value)}
+              value={searchInputText}
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput,
@@ -96,36 +104,38 @@ function Header(props) {
               inputProps={{ 'aria-label': 'search' }}
             />
           </div>
+
+          { searchInputText.length ? <IconButton
+            edge="start"
+            className={classes.menuButton}
+            onClick={() => setSearchText('')}
+            color="inherit"
+            aria-label="open drawer"
+          >
+            <ClearIcon />
+          </IconButton> : null}
         </Toolbar>
       </AppBar>
-      <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
-        <List className={classes.drawerListRoot} onClick={toggleDrawer(false)}>
-          <Link to="/spells/favorite" className={classes.drawerLink}>
-            <ListItem button>
-              <ListItemIcon><StarIcon /></ListItemIcon>
-              <ListItemText primary="Избранные" />
-            </ListItem>
-          </Link>
-          <Link to="/spells/all" className={classes.drawerLink}>
-            <ListItem button>
-              <ListItemIcon><ListIcon /></ListItemIcon>
-              <ListItemText primary="Список" />
-            </ListItem>
-          </Link>
-          <Link to="/spells/history" className={classes.drawerLink}>
-            <ListItem button>
-              <ListItemIcon><HistoryIcon /></ListItemIcon>
-              <ListItemText primary="История" />
-            </ListItem>
-          </Link>
-        </List>
-      </Drawer>
+      <Paper square className={classes.tabsContainer}>
+        <Tabs
+          value={tabIndex}
+          indicatorColor="primary"
+          textColor="primary"
+          centered
+          onChange={openTab}
+          aria-label="disabled tabs example"
+        >
+          <Tab label="Все" />
+          <Tab label="Избранные" />
+          <Tab label="Открытые" />
+        </Tabs>
+      </Paper>
     </div>
   );
 }
 
 const mapDispatchToProps = dispatch => ({
-  onSearchUpdate: debounce(text => dispatch(setFilter(text)), 200),
+  updateFilter: text => dispatch(setFilter(text)),
 });
 
 export default connect(null, mapDispatchToProps)(Header);

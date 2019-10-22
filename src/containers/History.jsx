@@ -7,7 +7,7 @@ import SpellCard from '../components/SpellCard';
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
-    marginTop: theme.spacing(9),
+    marginTop: theme.spacing(1),
   }
 }));
 

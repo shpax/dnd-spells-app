@@ -7,12 +7,13 @@ import primaryColor from '@material-ui/core/colors/brown';
 import secondaryColor from '@material-ui/core/colors/deepOrange';
 
 import { Provider } from 'react-redux';
-import { Route, Switch, BrowserRouter as Router, Redirect } from 'react-router-dom';
+import { Route, Switch, Router, Redirect } from 'react-router-dom';
 import SpellsList from './containers/AllSpells';
 import store from './store';
 import AppBar from './containers/Header';
 import History from './containers/History';
 import FavSpells from './containers/FavSpells';
+import browserHistory from './models/browserHistory';
 
 
 const theme = createMuiTheme({
@@ -31,7 +32,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <React.Fragment>
           <CssBaseline />
-          <Router>
+          <Router history={browserHistory}>
             <AppBar />
             <Container maxWidth="md">
               <Switch>

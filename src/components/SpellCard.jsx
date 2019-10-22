@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function SpellCard(props) {
   const classes = useStyles();
-  const { name, level, classes: spellClasses, components, distance, duration, descriptionHTML, castTime, school } = props.spell;
+  const { name, level, classes: spellClasses, components, distance, duration, descriptionHTML, castTime, school, source } = props.spell;
 
   return (
     <Card className={classes.card}>
@@ -38,6 +38,9 @@ export default function SpellCard(props) {
         </Typography>
         <Typography className={classes.meta} color="textSecondary">
           {spellClasses.join(', ')}
+        </Typography>
+        <Typography className={classes.meta} color="textSecondary">
+          {source}
         </Typography>
         <Typography className={classes.meta} color="textSecondary">
           {components.join(', ')}
