@@ -7,11 +7,11 @@ import SpellsTable from '../components/SpellsTable';
 import SpellsFilters from '../components/SpellsFilters';
 
 function SpellsList(props) {
-  const { spells, onSpellClick, onFavChange, updateFilter } = props;
+  const { spells, onSpellClick, onFavChange, updateFilter, filters } = props;
 
   return (
     <>
-      <SpellsFilters onFilterChange={updateFilter} />
+      <SpellsFilters onFilterChange={updateFilter} filters={filters}/>
       <SpellsTable spells={spells} onSpellClick={onSpellClick} onFavChange={onFavChange} />
     </>
   )

@@ -29,20 +29,15 @@ const useStyles = makeStyles(theme => ({
 export default function SpellCard(props) {
   const classes = useStyles();
   const classFilter = get(props, 'filters.class', '');
-  const [spellClass, setSpellClass] = React.useState(classFilter);
-  const handleChange = event => {
-    setSpellClass(event.target.value);
-    if (props.onFilterChange) {
-      props.onFilterChange('class', event.target.value);
-    }
-  };
+  const handleChange = event => props.onFilterChange('class', event.target.value);
+  
   return (
     <Card className={classes.card}>
       <CardContent>
         <FormControl className={classes.formControl}>
           <InputLabel shrink htmlFor="age-label-placeholder">Класс</InputLabel>
           <Select
-            value={spellClass}
+            value={classFilter}
             inputProps={{
               id: 'age-label-placeholder',
             }}
