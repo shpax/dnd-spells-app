@@ -24,5 +24,7 @@ export default class LocalStorageArrayModel {
 
   remove(item) {
     this.data = this.data.filter(sp => sp !== item);
+    
+    this.saveData();
   }
 }
