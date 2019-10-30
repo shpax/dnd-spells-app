@@ -11,7 +11,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 
 import { connect } from 'react-redux';
 import debounce from 'lodash/debounce';
-import { setFilter } from '../store/reducers/header';
+import { setSpellsFilter } from '../store/reducers/spells';
 import browserHistory from '../models/browserHistory';
 
 const useStyles = makeStyles(theme => ({
@@ -135,7 +135,7 @@ function Header({ updateFilter }) {
 }
 
 const mapDispatchToProps = dispatch => ({
-  updateFilter: text => dispatch(setFilter(text)),
+  updateFilter: text => dispatch(setSpellsFilter({ filter: 'name', value: text })),
 });
 
 export default connect(null, mapDispatchToProps)(Header);

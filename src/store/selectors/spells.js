@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect'
 
 export const spellsMapSelector = state => state.spells.map;
-export const filterSelector = state => state.header.filter;
 export const historyListSelector = state => state.history.list;
+export const filtersSelector = state => state.spells.filters;
 
 export const spellsListSelector = createSelector(
   spellsMapSelector,
@@ -15,10 +15,11 @@ export const spellsListSelector = createSelector(
 
 export const filteredSpellsListSelector = createSelector(
   spellsListSelector,
-  filterSelector,
-  (spellsList, filter) => {
+  filtersSelector,
+  (spellsList, filters) => {
     return spellsList.filter(
-      spell => spell.name.toLowerCase().includes(filter.toLowerCase())
+      spell => spell.name.toLowerCase().includes(filters.name.toLowerCase()) 
+        && (!filters.class.length || spell.classes.includes(filters.class))
     );
   });
 

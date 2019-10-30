@@ -14,12 +14,13 @@ const spellsMap = spells.reduce((map, spell) => {
 }, {});
 
 const initialState = {
+  filters: { class: '', name: '' },
   map: spellsMap,
 };
 
 export default handleActions({
   [setSpells]: (state, { payload: list }) => ({ ...state, list }),
-  [setSpellsFilter]: (state, { payload: filter }) => ({ ...state, filter }),
+  [setSpellsFilter]: (state, { payload: { filter, value }}) => ({ ...state, filters: { ...state.filters, [filter]: value } }),
   [setFavorite]: (state, { payload: { isFavorite, spellId }}) => {
     const updatedSpell = {...state.map[spellId], isFavorite };
     const spellsMap = {...state.map, [spellId]: updatedSpell};
